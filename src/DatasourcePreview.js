@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect  } from 'react';
 import { WidgetsContext } from './WidgetsContext';
-import { Modal, Button, Table, Row, Col } from 'antd';
+import { Modal, Button, Table, Row, Col, Spin } from 'antd';
 import { TextField } from "./Inputs";
 
 import { useForm, Controller } from "react-hook-form";
@@ -99,7 +99,8 @@ const DatasourcePreview =  (props) => {
                  
             </div>
          { !isLoading && <Table dataSource={dataSource} columns={columns} loading={isLoading}/> }
-       
+         {/* <Spin size="large" /> */}
+         {/* {isLoading.toString()} */}
       </Modal>
     </div>
     

@@ -56,7 +56,7 @@ const ReactFlowChart = () => {
     event.preventDefault();
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-  
+    // setWidgetType(() => type);
     const position = reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
@@ -66,7 +66,7 @@ const ReactFlowChart = () => {
       type: 'default',
       test: 'asd',
       position,
-      data: { label: `${type} Widget` },
+      data: { label: `${type} Widget`, widgetType: type},
       style: {
         background: '#D6D5E6',
         color: '#333',
@@ -83,12 +83,14 @@ const ReactFlowChart = () => {
 
   const onElementClick = (event, element) => {
     if(element?.data){
-      const widgetType = element.data.label.split(" ")[0];
+      // const widgetType = element.data.label.split(" ")[0];
+      
       event.preventDefault();
+      setWidgetType(() =>  element.data.widgetType);
       setNewNode(() => element);
       setVisibleDrawer(previousVisible => !previousVisible);
-      setWidgetType(() => widgetType);
-      console.log();
+      
+      // console.log();
       dispatch({
         type: "CREATE_OBJECT",
         payload: element.id,
@@ -103,6 +105,7 @@ const ReactFlowChart = () => {
   
 
   const updateNode = evt => {
+    debugger
     const { target } = evt;
     const { value } = target;
     const updatedNode = {...newNode, data: {label: value}};
@@ -156,7 +159,7 @@ const ReactFlowChart = () => {
         >
          
           {widgets[widgetType]}
-        
+          {/* {widgetType} */}
         </Drawer>
      
     </div>

@@ -18,11 +18,20 @@ const FormWidget =  (props) => {
   const [displayFields, setDisplayFields] = useState(true);
   
   const onSubmit = data => { 
-      
-      const field = Object.keys(globalState[currentNode]).length + 1;
+      if(Object.keys(data).length > 0){
+        const field = Object.keys(globalState[currentNode]).length + 1;
       const formWidgetKey = {[`field${field}`]: {...data, 'field': `field${field}`}};
       dispatch({ type: "CREATE_DATA", payload: formWidgetKey });
-      reset({});
+      reset({
+        type: '',
+        inputLabel: '', 
+        inputValue: '', 
+        inputPlaceholder:'',
+        inputName: ''
+      });
+      }
+      
+      
   };
 
   const types = [
@@ -115,6 +124,7 @@ const FormWidget =  (props) => {
                ref={register({ required: true, value: 'test' })}
               //  defaultValue="inputLabel"
                rules={{ required: true }}
+               defaultValue=''
                name="inputLabel"/>
                 </Col>   
               </Row> 
@@ -123,9 +133,10 @@ const FormWidget =  (props) => {
                 <label>Input Placeholder</label>
                 <Controller
                placeholder="Input Placeholder"
+               defaultValue=''
                as={inputField("Input Placeholder")}
                ref={register({ required: true })}
-              //  rules={{ required: true }}
+               rules={{ required: true }}
                control={control}
                name="inputPlaceholder"/>
                 </Col>
@@ -148,8 +159,9 @@ const FormWidget =  (props) => {
                 <Controller
                placeholder="Input Value"
                as={inputField("Input Value")}
+               defaultValue=''
                ref={register({ required: true })}
-              //  rules={{ required: true }}
+               rules={{ required: true }}
                control={control}
                name="inputValue"/>
                 </Col>
@@ -171,7 +183,9 @@ const FormWidget =  (props) => {
           renderItem={(item, index) => (
         <>
            <List.Item
-            actions={[<a key="list-loadmore-edit" onClick={() => editField(index)}>edit</a>, <a key="list-loadmore-more" onClick={() => deleteField(index)}>delete</a>]}
+          //  onClick={() => editField(index)}
+          // <a key="list-loadmore-edit" >edit</a>
+            actions={[<a key="list-loadmore-more" onClick={() => deleteField(index)}>delete</a>]}
           >
             <Skeleton loading={item.loading} active>
             <List.Item.Meta

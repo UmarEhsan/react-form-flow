@@ -1,6 +1,6 @@
 import React, {  useState, useContext, memo } from 'react';
 import { useForm, Controller } from "react-hook-form";
-import { Button, Table, Input, Row, Col } from "antd";
+import { Button, Table, Input, Row, Col, Spin } from "antd";
 import { WidgetsContext } from './WidgetsContext';
 import { inputField, CheckboxField } from "./Inputs";
 import DatasourcePreview from "./DatasourcePreview";
@@ -104,6 +104,10 @@ const DataSourceWidget =  (props) => {
           <div style={{padding: '10px', margin: '10px'}}>
             <input type="submit" style={{width: '50%'}}/>
             <Button onClick={onHandleDrawer} style={{width: '50%'}}>Cancel</Button>
+            
+          </div>
+          <div >
+            {isLoading && <Spin size="large" style={{width: '100%'}} />}
           </div>
 
           </form>
@@ -115,6 +119,7 @@ const DataSourceWidget =  (props) => {
               <CheckboxField data={columns} onHandleCheckbox={onHandleCheckbox}/>
             </Col>
            
+            
             {/* {dataSource.length > 0 && formFields[formName]} */}
           </Row>
          
