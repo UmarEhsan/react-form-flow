@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import { useContext, useEffect, useState } from 'react';
 import { TextField } from "./Inputs";
 import { Form, Input, Button, Checkbox } from 'antd';
@@ -16,6 +17,22 @@ import { WidgetsContext } from './WidgetsContext';
 //     span: 16,
 //   },
 // };
+
+const VALIDATE_FORM_MESSAGES_TEMPLATE = {
+  required: "${label} is required!",
+  types: {
+    email: 'Enter a valid email!',
+    number: "${label} is not a validate number!",
+    url: "${label} is not a valid url!",
+  },
+  number: {
+    range: "${label} must be between ${min} and ${max}",
+  },
+  string: {
+    max: "Character count cannot exceed ${max}",
+  },
+  whitespace: "${label} cannot be empty!",
+};
   
 
 const FormPreview = (props) => {
@@ -66,13 +83,16 @@ const FormPreview = (props) => {
 
     const inputs = {
     'text':  (elem) => {
-        return <TextField placeholder={elem.inputPlaceholder} type={elem.type}/>
+        return <TextField placeholder={elem?.inputPlaceholder || ''} type={elem.type} rules={[]}
+        />
      },
      'email':  (elem) => {
-        return <TextField placeholder={elem.inputPlaceholder} type={elem.type}/>
+        return <TextField  placeholder={elem?.inputPlaceholder || ''} type={elem.type} rules={[{ type: "email" }]}
+        />
      },
      'number':  (elem) => {
-      return <TextField placeholder={elem.inputPlaceholder} type={elem.type}/>
+      return <TextField placeholder={elem?.inputPlaceholder || ''} type={elem.type} rules={[{ type: "number" }]}
+      />
    }
     }
 
@@ -87,6 +107,7 @@ const FormPreview = (props) => {
       }}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
+      validateMessages={VALIDATE_FORM_MESSAGES_TEMPLATE}
     >
 
                 {
@@ -114,13 +135,13 @@ const FormPreview = (props) => {
 
       
 
-     
-
-      <Form.Item {...buttonItemLayout}>
+      {getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
         <Button type="primary" htmlType="submit">
           Submit
         </Button>
-      </Form.Item>
+      </Form.Item> }
+
+      
 
      
 

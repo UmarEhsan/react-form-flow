@@ -12,7 +12,7 @@ const { Option } = Select;
 const FormWidget =  (props) => {
   const [globalState, dispatch] = useContext(WidgetsContext);
   const { currentNode } = globalState;
-  const [fields, setFormFields] = useState([]);
+  // const [fields, setFormFields] = useState([]);
   const { newNode, onHandleNode, onHandleDrawer } = {...props};  
   const { handleSubmit, register, errors, control, reset } = useForm();
   const [displayFields, setDisplayFields] = useState(true);
@@ -20,10 +20,9 @@ const FormWidget =  (props) => {
   const onSubmit = data => { 
       
       const field = Object.keys(globalState[currentNode]).length + 1;
-      const formWidgetKey = {[`field${field}`]: data};
+      const formWidgetKey = {[`field${field}`]: {...data, 'field': `field${field}`}};
       dispatch({ type: "CREATE_DATA", payload: formWidgetKey });
-      // console.log(globalState[currentNode]);
-      reset();
+      reset({});
   };
 
   const types = [
@@ -31,36 +30,35 @@ const FormWidget =  (props) => {
     { value: "email", label: "Email" },
     { value: "number", label: "Number" }
   ];
-
+  let fields = [];
   const getFieldsList = () => {
-    const fields = [];
+    
     const { currentNode } = globalState;
     const keys = currentNode && Object.keys(globalState[currentNode]); 
     globalState[currentNode] && keys.forEach((elem) => {
       fields.push(globalState[currentNode][elem])
     });
-    // setFormFields(fields);
     return fields; 
   }
-  const deleteField = (index) => {
-    console.log('Delete');
-    console.log(index);
-    console.log(fields);
-  }
+ 
 
   const editField = (index) => {
     console.log('Edit');
-    console.log(index);
+    const { type, inputLabel, inputValue, inputPlaceholder, inputName } = fields[index];
+    reset({
+      type, inputLabel, inputValue, inputPlaceholder, inputName
+
+    });
   }
 
-  // useEffect(()=>{
-  //   debugger;
-  //   const { currentNode } = globalState;
-  //   const keys = currentNode && Object.keys(globalState[currentNode]); 
-  //   globalState[currentNode] && keys.forEach((elem) => {setFormFields([...fields, globalState[currentNode][elem]])});
-  //   eslint-disable-next-line react-hooks/exhaustive-deps
-  // },[globalState])
+  
  
+  const deleteField = (index) => {
+    const { currentNode } = globalState;
+    const field = fields[index].field;
+    dispatch({ type: "REMOVE_DATA", payload: {field:field, currentNode: currentNode }});
+    getFieldsList(); 
+  }
  
     
    
@@ -90,7 +88,7 @@ const FormWidget =  (props) => {
                 <Controller
                
                as={
-               <Select style={{width: '100%'}}>
+               <Select style={{width: '100%'}} placeholder="Choose Field Type">
                 {types.map(d => {
                   return (
                     <Option key={d.value} value={d.value} >
@@ -114,7 +112,8 @@ const FormWidget =  (props) => {
                 <Controller
                as={inputField("Input Label")}
                control={control}
-               ref={register({ required: true })}
+               ref={register({ required: true, value: 'test' })}
+              //  defaultValue="inputLabel"
                rules={{ required: true }}
                name="inputLabel"/>
                 </Col>   
@@ -126,12 +125,12 @@ const FormWidget =  (props) => {
                placeholder="Input Placeholder"
                as={inputField("Input Placeholder")}
                ref={register({ required: true })}
-               rules={{ required: true }}
+              //  rules={{ required: true }}
                control={control}
                name="inputPlaceholder"/>
                 </Col>
               </Row>
-              <Row>
+              {/* <Row>
                 <Col span={24}>
                 <label>Input Name</label>
                 <Controller
@@ -142,7 +141,7 @@ const FormWidget =  (props) => {
                control={control}
                name="inputName"/>
                 </Col>
-              </Row>
+              </Row> */}
               <Row>
                 <Col span={24}>
                 <label>Input Value</label>
@@ -150,7 +149,7 @@ const FormWidget =  (props) => {
                placeholder="Input Value"
                as={inputField("Input Value")}
                ref={register({ required: true })}
-               rules={{ required: true }}
+              //  rules={{ required: true }}
                control={control}
                name="inputValue"/>
                 </Col>

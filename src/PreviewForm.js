@@ -59,7 +59,7 @@ const PreviewForm = (props) => {
             <label>Layout Type</label> 
           </Col>
           <Col span={15}>
-          <Select style={{width: '100%'}} onChange={onHandleLayoutChange}>
+          <Select style={{width: '100%'}} onChange={onHandleLayoutChange} placeholder="Choose Layout Type">
                 {layoutType.map(d => {
                   return (
                     <Option key={d.value} value={d.value} >
