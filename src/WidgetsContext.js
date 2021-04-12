@@ -20,7 +20,13 @@ const reducer = (state, action) => {
   }
 
   const addNewItem = (state, payload) => {
-      return {...state, [payload]: {}, currentNode: payload };
+      debugger;
+    //   return {...state, [payload]: {}, currentNode: payload };
+      if(!state[payload]){
+        return {...state, [payload]: {}, currentNode: payload };
+      }
+      return {...state, currentNode: payload };
+    
   }
         const [globalState, dispatch] = React.useReducer(reducer, initialState);
         

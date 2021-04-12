@@ -22,9 +22,7 @@ let id = 0;
 const getId = () => `dndnode_${id++}`;
 
 const ReactFlowChart = () => {
-    // console.log(useContext(WidgetsContext))
   const [globalState, dispatch] = useContext(WidgetsContext);
-  console.log(globalState);
   const [newNode, setNewNode] = useState({});
   const [widgetType, setWidgetType] = useState('Form');
   const [visibleDrawer, setVisibleDrawer] = useState(false);
@@ -58,7 +56,7 @@ const ReactFlowChart = () => {
     event.preventDefault();
     const reactFlowBounds = reactFlowWrapper.current.getBoundingClientRect();
     const type = event.dataTransfer.getData('application/reactflow');
-    debugger;
+  
     const position = reactFlowInstance.project({
       x: event.clientX - reactFlowBounds.left,
       y: event.clientY - reactFlowBounds.top,
@@ -96,15 +94,8 @@ const ReactFlowChart = () => {
         payload: element.id,
         
       });
-      
-      //const widgetName = (formFields_ && Object.keys(formFields_).length > 0) ?  `${widgetType}_Custom_${Object.keys(formFields_).length + 1}` : `${widgetType}_Custom_1`;
-    //   setFormFields_({...formFields_, [element.id]: {}});
-    //   console.log(for)
     }
-    //Todo update context here for types
-    
-    
-  }
+}
 
   const onClose = () => {
     setVisibleDrawer(previousVisible => !previousVisible);
@@ -163,7 +154,7 @@ const ReactFlowChart = () => {
           visible={visibleDrawer}
           key={'right'}
         >
-          {widgetType}
+         
           {widgets[widgetType]}
         
         </Drawer>

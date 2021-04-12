@@ -1,18 +1,21 @@
-import React, {  useState, useContext } from 'react';
+import React, {  useState, useContext, memo } from 'react';
 import { useForm, Controller } from "react-hook-form";
-import { Button, Table, Input } from "antd";
+import { Button, Table, Input, Row, Col } from "antd";
 import { WidgetsContext } from './WidgetsContext';
-import { inputField } from "./Inputs";
+import { inputField, CheckboxField } from "./Inputs";
+import DatasourcePreview from "./DatasourcePreview";
 
 const DataSourceWidget =  (props) => {
   const [globalState, dispatch] = useContext(WidgetsContext);
+  const { currentNode } = globalState;
   const { newNode, onHandleNode, onHandleDrawer } = {...props};  
   const [columns, setColumns] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [pickFields, setPickFields] = useState([]);
   const [dataSource, setDataSource] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  
   const formName = 'form_dataSource_1';
   const [formFields, setFormFields] = useState({[formName]: {}});
-  // console.log(formFields_);
   const { handleSubmit, register, control } = useForm({
     defaultValues: {
         slug_input: '',
@@ -25,7 +28,6 @@ const DataSourceWidget =  (props) => {
   const getApiUrl = (slug_input, url) => slug_input ? `${url}/${slug_input}` : url; 
 
   const onSubmit = data => {
-    const { currentNode } = globalState;
     setIsLoading(true);
     setDataSource([]);
     
@@ -36,7 +38,7 @@ const DataSourceWidget =  (props) => {
     .then(result => {
        setIsLoading(false);
        const columns = Object.keys(result)
-       const tableColumns = columns.map((elem) => ({title:elem, dataIndex: elem, key: elem}));
+       const tableColumns = columns.map((elem) => ({title:elem, dataIndex: elem, key: elem, isSelected: false}));
        
       
        const dataSourceData = {...data, columns, style:{}};
@@ -52,9 +54,33 @@ const DataSourceWidget =  (props) => {
     });
   }
 
+  const onHandleCheckbox = (value) => {
+    // let filteredItems;
+    let dataSource;
+    const pickFieldIndex = pickFields.indexOf(value);
+    if(pickFieldIndex === -1){
+      setPickFields([...pickFields, value]);
+      dataSource = {pickFields: [...pickFields, value] };
+     
+    }
+    else{
+      const filteredItems = pickFields.filter(function(item) {
+        return item !== value
+      })
+      setPickFields(filteredItems);
+      dataSource = {pickFields: filteredItems};
+    }
+    dispatch({ type: "CREATE_DATA", payload: {pickFields :dataSource.pickFields} });
+    
+   
+  
+     
+  }
+
   return (
       <div>
-         <Input placeholder="Form Name" ref={register} value={newNode?.data?.label} onChange={(evt) => onHandleNode(evt)}/> 
+         <DatasourcePreview widgetType='datasource' />
+         <Input style={{padding: '10px', margin: '10px'}} placeholder="Form Name" ref={register} value={newNode?.data?.label} onChange={(evt) => onHandleNode(evt)}/> 
         <form onSubmit={handleSubmit(onSubmit)}>
         <div>
             <section>
@@ -63,22 +89,35 @@ const DataSourceWidget =  (props) => {
                as={inputField("slug_input")}
                control={control}
                rules={{ required: true }}
-               name="slug_input"/>
+               name="slug_input"
+               style={{padding: '10px', margin: '10px'}}
+               />
                <Controller
                as={inputField("Url")}
                control={control}
                rules={{ required: true }}
-               name="url"/>
+               name="url"
+               style={{padding: '10px', margin: '10px'}}
+               />
             </section>
         </div> 
-          <div>
-            <input type="submit" />
-            <Button onClick={onHandleDrawer}>Cancel</Button>
+          <div style={{padding: '10px', margin: '10px'}}>
+            <input type="submit" style={{width: '50%'}}/>
+            <Button onClick={onHandleDrawer} style={{width: '50%'}}>Cancel</Button>
           </div>
 
           </form>
-          { !isLoading && <Table dataSource={dataSource} columns={columns} /> }
-          {JSON.stringify(formFields)}
+          {/* { !isLoading && <Table dataSource={dataSource} columns={columns} /> } */}
+
+          <Row>
+            <Col>
+              <h4>Pick Fields</h4>
+              <CheckboxField data={columns} onHandleCheckbox={onHandleCheckbox}/>
+            </Col>
+           
+            {/* {dataSource.length > 0 && formFields[formName]} */}
+          </Row>
+         
           
         
       </div>
@@ -90,4 +129,4 @@ const DataSourceWidget =  (props) => {
   );
 };
 
-export default DataSourceWidget;
+export default memo(DataSourceWidget);
