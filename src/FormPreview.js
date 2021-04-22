@@ -37,7 +37,7 @@ const VALIDATE_FORM_MESSAGES_TEMPLATE = {
 
 const FormPreview = (props) => {
   
-  const { fields, layoutType } = {...props}; 
+  const { fields, layoutType, onHandleSubmit } = {...props}; 
   
   const [globalState, dispatch] = useContext(WidgetsContext); 
   
@@ -54,8 +54,10 @@ const FormPreview = (props) => {
   const getFieldsList = () => {
     const fields = [];
     const { currentNode } = globalState;
-    const keys = currentNode && Object.keys(globalState[currentNode]); 
-    globalState[currentNode] && keys.forEach((elem) => {fields.push(globalState[currentNode][elem])});
+    const { children, parent, ...propsNoA } = globalState[currentNode];
+    debugger;
+    const keys = currentNode && Object.keys(propsNoA); 
+    globalState[currentNode] && keys.forEach((elem) => {fields.push(propsNoA[elem])});
     return fields; 
   }
   const formItemLayout =
@@ -75,6 +77,7 @@ const FormPreview = (props) => {
   
   const onFinish = (values) => {
     console.log('Success:', values);
+    onHandleSubmit();
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -136,7 +139,7 @@ const FormPreview = (props) => {
       
 
       {getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
-        <Button type="primary" htmlType="submit">
+        <Button type="primary" htmlType="submit" style={{width: '100%'}}>
           Submit
         </Button>
       </Form.Item> }

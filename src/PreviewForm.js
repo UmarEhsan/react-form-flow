@@ -10,7 +10,7 @@ const { Option } = Select;
 const PreviewForm = (props) => {
   const [globalState, dispatch] = useContext(WidgetsContext); 
   const [previewLayout, setPreviewLayout] = useState(''); 
-  console.log(globalState);
+  // console.log(globalState);
   const [fields, setFormFields] = useState([]);
   const [visible, setVisible] = useState(false);
   const layoutType = [
@@ -40,6 +40,9 @@ const PreviewForm = (props) => {
 
   const onHandleLayoutChange = (evt) => {
     setPreviewLayout(evt);
+  }
+  const onHandleSubmit = () => {
+    setVisible(false)
   }
   
 
@@ -82,9 +85,10 @@ const PreviewForm = (props) => {
         onOk={() => setVisible(false)}
         onCancel={() => setVisible(false)}
         width={1000}
+        footer={null}
       >
          
-         <FormPreview fields={fields} layoutType={previewLayout}/>
+         <FormPreview fields={fields} layoutType={previewLayout} onHandleSubmit={onHandleSubmit}/>
 
        
       </Modal>

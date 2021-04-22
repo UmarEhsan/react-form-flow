@@ -38,7 +38,7 @@ const DataSourceWidget =  (props) => {
     .then(result => {
        setIsLoading(false);
        const columns = Object.keys(result)
-       const tableColumns = columns.map((elem) => ({title:elem, dataIndex: elem, key: elem, isSelected: false}));
+       const tableColumns = columns.map((elem) => ({title:elem, value:elem, dataIndex: elem, key: elem, isSelected: false}));
        
       
        const dataSourceData = {...data, columns, style:{}};

@@ -15,9 +15,9 @@ const Sidebar=  () => {
       <div className="dndnode dataSource" onDragStart={(event) => onDragStart(event, 'dataSource')} draggable>
         DataSource
       </div>
-       {/* <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'output')} draggable>
-        Output Node
-      </div> */}
+       <div className="dndnode output" onDragStart={(event) => onDragStart(event, 'email')} draggable>
+        Email Widget
+      </div>
     </aside>
   );
 };

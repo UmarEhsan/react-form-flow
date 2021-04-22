@@ -70,6 +70,7 @@ const DatasourcePreview =  (props) => {
         onOk={() => setVisible(false)}
         onCancel={() => setVisible(false)}
         width={600}
+        
       >
          <div style={{padding: "10px"}}>
               

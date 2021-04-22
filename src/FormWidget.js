@@ -43,7 +43,9 @@ const FormWidget =  (props) => {
   const getFieldsList = () => {
     
     const { currentNode } = globalState;
-    const keys = currentNode && Object.keys(globalState[currentNode]); 
+    const { children, parent, ...propsNoA } = globalState[currentNode];
+    console.log(propsNoA);
+    const keys = currentNode && Object.keys(propsNoA); 
     globalState[currentNode] && keys.forEach((elem) => {
       fields.push(globalState[currentNode][elem])
     });
@@ -52,7 +54,7 @@ const FormWidget =  (props) => {
  
 
   const editField = (index) => {
-    console.log('Edit');
+    // console.log('Edit');
     const { type, inputLabel, inputValue, inputPlaceholder, inputName } = fields[index];
     reset({
       type, inputLabel, inputValue, inputPlaceholder, inputName
@@ -160,8 +162,8 @@ const FormWidget =  (props) => {
                placeholder="Input Value"
                as={inputField("Input Value")}
                defaultValue=''
-               ref={register({ required: true })}
-               rules={{ required: true }}
+               ref={register({ required: false })}
+               rules={{ required: false }}
                control={control}
                name="inputValue"/>
                 </Col>
@@ -176,6 +178,9 @@ const FormWidget =  (props) => {
             <input type="submit" style={{width: '50%'}}/>
             <Button onClick={onHandleDrawer} style={{width: '50%'}}>Cancel</Button>
           </div>
+          
+          
+           
           <List
           header={<div>Form Fields</div>}
           bordered
@@ -199,6 +204,7 @@ const FormWidget =  (props) => {
        
       )}
     />
+          
     </form>
     </div>
     
