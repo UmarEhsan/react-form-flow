@@ -8,7 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 
 
 const DatasourcePreview =  (props) => {
-    const [globalState] = useContext(WidgetsContext); 
+    const [globalState, dispatch] = useContext(WidgetsContext); 
     const { currentNode } = globalState;
     const [visible, setVisible] = useState(false);
     const [columns, setColumns] = useState([]);
@@ -42,6 +42,7 @@ const DatasourcePreview =  (props) => {
            const tableColumns = pickFields.map((elem) => ({title:elem, dataIndex: elem, key: elem}));
            setColumns(tableColumns);
            setDataSource([result]);
+           dispatch({ type: "ADD_DATA", payload: {currentNode: currentNode, data: [result]} });
            setVisible(true)
            setIsLoading(false);
         })
@@ -52,16 +53,42 @@ const DatasourcePreview =  (props) => {
   }
     
 
-   
+  const getParentData = () => {
+    const {currentNode} = globalState;
+    if(currentNode){
+      const {parent}  = globalState[currentNode];
+      console.log(globalState[parent]);
+    }
+    
+  }   
+
+  const isParentDataExist = () => {
+    const {currentNode} = globalState;
+    
+    if(currentNode){
+      const {parent}  = globalState[currentNode];
+      return parent && globalState[parent]; 
+    }
+    return false;
+    
+  }
    
  
     
    
   return (
     <div>
+      <Row>
+        <Col>
+        {isParentDataExist() && <Button type="primary" onClick={getParentData} style={{margin: "10px"}}>
+          Get Parent Data
+        </Button>}
+        
+        </Col>
+      </Row>
      
-       <Button type="primary" onClick={getDataSource} style={{margin: '10px'}}>
-        Preview Data Source
+       <Button type="primary" onClick={getDataSource} style={{margin: '10px', width: '29%'}}>
+        Preview
       </Button>
       <Modal
         title="Data Source"
@@ -88,7 +115,7 @@ const DatasourcePreview =  (props) => {
               <Col span={4}>
                  <input type="submit"  style={{
                    padding: '10px', 
-                   margin: '10px', 
+                   margin: '0px 5px', 
                    color: '#fff',
                    background: '#1890ff',
                    borderColor: '#1890ff',

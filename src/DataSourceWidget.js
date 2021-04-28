@@ -102,7 +102,7 @@ const DataSourceWidget =  (props) => {
             </section>
         </div> 
           <div style={{padding: '10px', margin: '10px'}}>
-            <input type="submit" style={{width: '50%'}}/>
+            <Button type="primary" htmlType="submit" style={{width: '50%'}}> Submit</Button>
             <Button onClick={onHandleDrawer} style={{width: '50%'}}>Cancel</Button>
             
           </div>

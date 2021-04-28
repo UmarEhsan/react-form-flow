@@ -43,13 +43,16 @@ const FormWidget =  (props) => {
   const getFieldsList = () => {
     
     const { currentNode } = globalState;
-    const { children, parent, ...propsNoA } = globalState[currentNode];
+    if(currentNode && globalState[currentNode]){
+      const { children, parent, ...propsNoA } = globalState[currentNode];
     console.log(propsNoA);
     const keys = currentNode && Object.keys(propsNoA); 
     globalState[currentNode] && keys.forEach((elem) => {
       fields.push(globalState[currentNode][elem])
     });
     return fields; 
+    }
+    
   }
  
 
@@ -77,24 +80,27 @@ const FormWidget =  (props) => {
     <div>
       <PreviewForm />
       <form onSubmit={handleSubmit(onSubmit)}>
-            <div style={{padding: "10px"}}>
+            <div style={{padding: "15px"}}>
               
               <Input placeholder="Form Name" ref={register} value={newNode?.data?.label} onChange={(evt) => onHandleNode(evt)}/>
             </div>
+            <div style={{padding: "15px"}}>
             <Button
                 type="dashed"
                 onClick={() => setDisplayFields(previousDisplayFields => !previousDisplayFields)}
-                style={{ width: '95%', margin: '10px'}}
+                style={{ width: '100%'}}
                 icon={<PlusOutlined />}
               >
-                Add field
+                Add Field
               </Button>
+            </div>
+            
             
             {!displayFields && 
-            <div style={{padding: "10px"}}>
+            <div>
             <section>
               <Row>
-                <Col span={24}>
+                <Col span={24} style={{padding: "15px"}}>
                 <label>Select Type</label>
                 <Controller
                
@@ -118,7 +124,7 @@ const FormWidget =  (props) => {
 					        <span className='error'>This field is required</span>
 				        )}
                <Row>
-                <Col span={24}>
+                <Col span={24} style={{padding: "15px"}}>
                 <label>Input Label</label>
                 <Controller
                as={inputField("Input Label")}
@@ -131,7 +137,7 @@ const FormWidget =  (props) => {
                 </Col>   
               </Row> 
               <Row>
-                <Col span={24}>
+                <Col span={24} style={{padding: "15px"}}>
                 <label>Input Placeholder</label>
                 <Controller
                placeholder="Input Placeholder"
@@ -143,8 +149,8 @@ const FormWidget =  (props) => {
                name="inputPlaceholder"/>
                 </Col>
               </Row>
-              {/* <Row>
-                <Col span={24}>
+              <Row>
+                <Col span={24} style={{padding: "15px"}}>
                 <label>Input Name</label>
                 <Controller
                placeholder="Input Name"
@@ -154,8 +160,8 @@ const FormWidget =  (props) => {
                control={control}
                name="inputName"/>
                 </Col>
-              </Row> */}
-              <Row>
+              </Row>
+              {/* <Row>
                 <Col span={24}>
                 <label>Input Value</label>
                 <Controller
@@ -167,16 +173,16 @@ const FormWidget =  (props) => {
                control={control}
                name="inputValue"/>
                 </Col>
-              </Row>
+              </Row> */}
               
               
                
             </section>
            
           </div> }
-          <div style={{padding: "10px"}}>
-            <input type="submit" style={{width: '50%'}}/>
-            <Button onClick={onHandleDrawer} style={{width: '50%'}}>Cancel</Button>
+          <div style={{padding: "15px"}}>
+            <Button type="primary" htmlType="submit" style={{width: '40%', margin: '0px 20px'}}>Submit</Button>
+            <Button onClick={onHandleDrawer} style={{width: '40%', margin: '0px 20px'}}>Cancel</Button>
           </div>
           
           
@@ -187,11 +193,13 @@ const FormWidget =  (props) => {
           dataSource={getFieldsList()}
           renderItem={(item, index) => (
         <>
+            {item.type &&
            <List.Item
           //  onClick={() => editField(index)}
           // <a key="list-loadmore-edit" >edit</a>
             actions={[<a key="list-loadmore-more" onClick={() => deleteField(index)}>delete</a>]}
           >
+        
             <Skeleton loading={item.loading} active>
             <List.Item.Meta
                
@@ -199,7 +207,7 @@ const FormWidget =  (props) => {
                 
               />
             </Skeleton>
-          </List.Item>
+          </List.Item>}
         </>
        
       )}

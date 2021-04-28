@@ -11,7 +11,7 @@ export const inputField = (placeholder, onChange ) => {
 
 export const TextField  =  (props) => {
     return (
-     <Input {...props} />
+     <Input {...props} style={{padding: '10px'}}/>
     );
   };
 

@@ -1,7 +1,7 @@
 /* eslint-disable no-template-curly-in-string */
 import { useContext, useEffect, useState } from 'react';
 import { TextField } from "./Inputs";
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, Row, Col } from 'antd';
 import { WidgetsContext } from './WidgetsContext';
 // const layout = {
 //   labelCol: {
@@ -42,7 +42,7 @@ const FormPreview = (props) => {
   const [globalState, dispatch] = useContext(WidgetsContext); 
   
   // useEffect(()=>{
-  //   debugger;
+  //   
   //   const keys = currentNode && Object.keys(globalState[currentNode]); 
   //   globalState[currentNode] && keys.forEach((elem) => {
   //     setFormFields([...formFields, globalState[currentNode][elem]]);
@@ -54,30 +54,46 @@ const FormPreview = (props) => {
   const getFieldsList = () => {
     const fields = [];
     const { currentNode } = globalState;
-    const { children, parent, ...propsNoA } = globalState[currentNode];
-    debugger;
+    
+    if(currentNode){
+    const { children, parent, data, ...propsNoA } = globalState[currentNode];
+    
     const keys = currentNode && Object.keys(propsNoA); 
     globalState[currentNode] && keys.forEach((elem) => {fields.push(propsNoA[elem])});
+    
+    }
     return fields; 
   }
   const formItemLayout =
     layoutType === 'horizontal'
       ? {
-          labelCol: { span: 4 },
+          labelCol: { span: 6 },
           wrapperCol: { span: 14 },
         }
-      : null;
+      : (layoutType === 'vertical') ? {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 23 },
+      } : null;
+  const margin =  layoutType === 'horizontal' ? '0px 15px' : '0px 28px';
+  const buttonMargin = layoutType === 'horizontal' ? '' : '700px';    
 
   const buttonItemLayout =
   layoutType === 'horizontal'
       ? {
-          wrapperCol: { span: 14, offset: 4 },
+          wrapperCol: { span: 13, offset: 9 },
         }
-      : null; 
+      : (layoutType === 'vertical') ? 
+        {
+          wrapperCol: { span: 7, offset: 17 },
+        } : null;
   
   const onFinish = (values) => {
     console.log('Success:', values);
-    onHandleSubmit();
+    const {currentNode} = globalState;
+    if(currentNode){
+      dispatch({ type: "ADD_DATA", payload: {currentNode: currentNode, data: values} });
+    }
+    // onHandleSubmit();
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -105,9 +121,10 @@ const FormPreview = (props) => {
       {...formItemLayout}
       name="basic"
       layout={layoutType}
-      initialValues={{
-        remember: true,
-      }}
+      // initialValues={{
+      //   remember: true,
+      // }}
+      
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       validateMessages={VALIDATE_FORM_MESSAGES_TEMPLATE}
@@ -118,10 +135,10 @@ const FormPreview = (props) => {
                         <>
                             
                          
-
+       <label>{elem.inputLabel}</label>               
       <Form.Item
-        label={elem.inputLabel}
-        name={elem.name}
+        
+        name={['form', `${elem.inputName}`]}
         >
         {inputs[elem.type](elem)}
       </Form.Item>
@@ -134,15 +151,61 @@ const FormPreview = (props) => {
                 }
 
 
-      
-
-      
-
-      {getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
-        <Button type="primary" htmlType="submit" style={{width: '100%'}}>
+{getFieldsList().length > 0 && <Form.Item {...buttonItemLayout} >
+        <Button type="primary" htmlType="submit" style={{margin: margin}}>
           Submit
         </Button>
+        <Button type="" htmlType="" style={{margin: margin}}>
+          Cancel
+        </Button>
       </Form.Item> }
+
+      {/* <Row>
+        <Col offset={19}>
+        {getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
+        <Button type="primary" htmlType="submit" style={{margin: '0px 22px'}}>
+          Submit
+        </Button>
+        <Button type="" htmlType="">
+          Cancel
+        </Button>
+      </Form.Item> }
+        </Col>
+      </Row> */}
+      
+
+    {/* { layoutType === 'vertical' ? 
+      <Row>
+        <Col offset={19}>
+        {getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
+        <Button type="primary" htmlType="submit" style={{margin: '0px 22px'}}>
+          Submit
+        </Button>
+        <Button type="" htmlType="">
+          Cancel
+        </Button>
+      </Form.Item> }
+        </Col>
+      </Row>
+      : 
+      <Row>
+        <Col offset={8}>
+                {
+                   getFieldsList().length > 0 && <Form.Item {...buttonItemLayout}>
+        <Button type="primary" htmlType="submit" >
+          Submit
+        </Button>
+        <Button type="" htmlType="">
+          Cancel
+        </Button>
+      </Form.Item> 
+                }
+        </Col>
+      </Row>
+     
+              } */}
+
+      
 
       
 

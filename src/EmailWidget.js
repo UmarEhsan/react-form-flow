@@ -45,7 +45,7 @@ const EmailWidget =  (props) => {
       const filteredItems = fields.filter(function(item) {
         return item.value !== value
       })
-      debugger;
+      
       setFields(filteredItems);
             emailData = {fields: filteredItems};
     }
@@ -80,35 +80,39 @@ const EmailWidget =  (props) => {
                  <h4>Server Fields</h4>
                  <form onSubmit={handleSubmit(onSubmit)}>
                     <Row>
-                        <Col span={24}>
+                        <Col span={24} style={{padding: '10px'}}>
+                        <label>URL</label>
                         <Controller
                         as={<TextField placeholder='Enter url.....' type="text"/>}
                         control={control}
                         rules={{ required: true }}
                         name="server_url"
-                        style={{padding: '10px', margin: '10px'}}
+                        style={{margin: '10px'}}
                     />
                     </Col>
                     </Row>
                     <Row>
-                        <Col span={24}>
+                        
+                        <Col span={24} style={{padding: '10px'}}>
+                        <label>Email</label>
                         <Controller
                         as={<TextField placeholder='Enter email.....' type="email"/>}
                         control={control}
                         rules={{ required: true }}
                         name="server_email"
-                        style={{padding: '10px', margin: '10px'}}
+                        style={{ margin: '10px'}}
                     />
                     </Col>
                     </Row>
                     <Row>
-                        <Col span={24}>
+                        <Col span={24} style={{padding: '10px'}}>
+                        <label>Password</label>
                         <Controller
                         as={<TextField placeholder='Enter password.....' type="password"/>}
                         control={control}
                         rules={{ required: true }}
                         name="server_password"
-                        style={{padding: '10px', margin: '10px'}}
+                        style={{ margin: '10px'}}
                     />
                     </Col>
                     </Row>

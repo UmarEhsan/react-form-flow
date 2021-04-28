@@ -9,7 +9,7 @@ const { Option } = Select;
 
 const PreviewForm = (props) => {
   const [globalState, dispatch] = useContext(WidgetsContext); 
-  const [previewLayout, setPreviewLayout] = useState(''); 
+  const [previewLayout, setPreviewLayout] = useState('vertical'); 
   // console.log(globalState);
   const [fields, setFormFields] = useState([]);
   const [visible, setVisible] = useState(false);
@@ -44,15 +44,39 @@ const PreviewForm = (props) => {
   const onHandleSubmit = () => {
     setVisible(false)
   }
-  
+  const getParentData = () => {
+    const {currentNode} = globalState;
+    if(currentNode){
+      const {parent}  = globalState[currentNode];
+      console.log(globalState[parent]);
+    }
+    
+  }   
+
+  const isParentDataExist = () => {
+    const {currentNode} = globalState;
+    
+    if(currentNode){
+      const {parent}  = globalState[currentNode];
+      return parent && globalState[parent]; 
+    }
+    return false;
+    
+  }
 
     
   return (
     <>
-
+      <Row>
+        <Col>
+         {isParentDataExist() && <Button type="primary" onClick={getParentData} style={{margin: "10px"}}>
+          Get Parent Data
+        </Button>}
+        </Col>
+      </Row>
       <Row>
       <Col span={8}>
-      <Button type="primary" onClick={updateFormFields} style={{margin: "10px"}}>
+      <Button type="primary" onClick={updateFormFields} style={{margin: '10px', width: '86%'}}>
         Preview Form
       </Button>
       </Col>

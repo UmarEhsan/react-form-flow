@@ -8,7 +8,7 @@ import { useForm, Controller } from "react-hook-form";
 
 
 const EmailPreview =  (props) => {
-    const [globalState] = useContext(WidgetsContext); 
+    const [globalState, dispatch] = useContext(WidgetsContext); 
     const { currentNode } = globalState;
     const [isLoading, setIsLoading] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -30,6 +30,7 @@ const EmailPreview =  (props) => {
                 },
               body: JSON.stringify(data)
             });
+            dispatch({ type: "ADD_DATA", payload: {currentNode: currentNode, data: data} });
             message.success('Email has been sent kindly check your email thanks!!!!');
             setIsLoading(false);
             setVisible(false);
@@ -66,22 +67,47 @@ const EmailPreview =  (props) => {
     
 
    
-   
+        const getParentData = () => {
+          const {currentNode} = globalState;
+          if(currentNode){
+            const {parent}  = globalState[currentNode];
+            console.log(globalState[parent]);
+          }
+          
+        }   
+      
+        const isParentDataExist = () => {
+          const {currentNode} = globalState;
+          
+          if(currentNode){
+            const {parent}  = globalState[currentNode];
+            return parent && globalState[parent]; 
+          }
+          return false;
+          
+        }
  
     
    
   return (
     <div>
+      <Row>
+        <Col>
+        {isParentDataExist() && <Button type="primary" onClick={getParentData} style={{margin: "10px"}}>
+          Get Parent Data
+        </Button>}
+        </Col>
+      </Row>
      
-       <Button type="primary" onClick={onHandleEmailPreview} style={{margin: '10px'}}>
-        Preview Email 
+       <Button type="primary" onClick={onHandleEmailPreview} style={{margin: '10px', width: '86%'}}>
+        Preview 
       </Button>
       <Modal
         title="Email Preview"
         centered
         visible={visible}
-        // onOk={() => setVisible(false)}
-        // onCancel={() => setVisible(false)}
+        onOk={() => setVisible(false)}
+        onCancel={() => setVisible(false)}
         width={600}
         footer={null}
       >
@@ -111,7 +137,7 @@ const EmailPreview =  (props) => {
                 //  globalState[currentNode]?.emailSource.length
                 }   */}
               <Row>
-                <Col span={24}>
+                <Col span={24} style={{padding: '10px'}}>
                 <label>Receiver Email</label>
                 <Controller
                 as={<TextField placeholder='Enter receiver email' type='email' rules={[]}/>}
@@ -122,10 +148,10 @@ const EmailPreview =  (props) => {
                 </Col>   
               </Row> 
               <Row>
-                <Col span={24}>
-                <label>Subject</label>
+                <Col span={24} style={{padding: '10px'}}>
+                <label >Subject</label>
                 <Controller
-                as={<TextField placeholder='Subject...' type='text' rules={[]}/>}
+                as={<TextField  placeholder='Subject...' type='text' rules={[]}/>}
                 control={control}
                 rules={{ required: true }}
                 defaultValue=''
@@ -133,7 +159,7 @@ const EmailPreview =  (props) => {
                 </Col>   
               </Row> 
               <Row>
-                <Col span={24}>
+                <Col span={24} style={{padding: '10px'}}>
               
                 <Controller
                 placeholder="Content"
@@ -145,10 +171,20 @@ const EmailPreview =  (props) => {
                 name="content"/>
                 </Col>
               </Row>
-              <div style={{padding: "10px"}}>
-            <input type="submit" style={{width: '100%'}}/>
-      
-          </div>
+              <div>
+                <Row>
+                  <Col offset={14}>
+                 
+                <Button type="primary" htmlType="submit" style={{margin: '0px 26px'}}>
+                    Submit
+                </Button>
+                <Button type="" htmlType="" onClick={() => setVisible(false)}>
+                    Cancel
+                </Button>
+                  </Col>
+                </Row>
+              
+              </div>
               
               
                

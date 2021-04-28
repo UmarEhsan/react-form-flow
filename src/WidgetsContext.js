@@ -8,17 +8,21 @@ const reducer = (state, action) => {
     const { payload } = action;
     switch (action.type) {
       case "CREATE_OBJECT":
-       return addNewItem(state, payload);
+      return addNewItem(state, payload);
+      case "REMOVE_OBJECT": 
+      return removeItem(state, payload);
       case "CREATE_CHILDREN":
-        return createChildren(state, payload.node_id, payload.children); 
-        case "CREATE_PARENT":
-          return createParent(state, payload.node_id, payload.parent);   
+      return createChildren(state, payload.node_id, payload.children); 
+      case "CREATE_PARENT":
+      return createParent(state, payload.node_id, payload.parent); 
+      case "ADD_DATA":
+      return addData(state, payload);    
       case "CREATE_DATA": 
       return createData(state, payload);
       case "REMOVE_DATA":
       return removeData(state, payload);    
       default:
-       return state;    
+      return state;    
   }};
 
   const createData = (state, payload) => {
@@ -26,7 +30,7 @@ const reducer = (state, action) => {
   }
 
   const createChildren = (state, node_id, children) => {
-    // debugger;
+    // 
     let newState = {
       ...state,
       [node_id]: {
@@ -40,7 +44,11 @@ const reducer = (state, action) => {
     return newState;
   }
   const createParent = (state, node_id, parent) => {
-    // debugger;
+    // 
+    const parentData = state[parent];
+    if(parentData.data){
+      state[node_id]['parentData'] = parentData.data;
+    }
     let newState = {
       ...state,
       [node_id]: {
@@ -52,11 +60,25 @@ const reducer = (state, action) => {
     return newState;
   }
 
+  const addData = (state, payload) => {
+    const {currentNode, data} = payload;
+    // const presentNode = state;
+    state[currentNode].data = data;
+    if(state[currentNode].children){
+      const children = Object.keys(state[currentNode].children);
+      children.forEach((elem) => {
+        state[elem].parentData = data;
+      })
+    }
+    
+    return {...state, currentNode: currentNode };
+  }
+
   const addNewItem = (state, payload) => {
-      // debugger;
+      // 
     //   return {...state, [payload]: {}, currentNode: payload };
       if(!state[payload]){
-        return {...state, [payload]: {children:{}, parent:''}, currentNode: payload };
+        return {...state, [payload]: {children:null, parent:null}, currentNode: payload };
       }
       return {...state, currentNode: payload };
     
@@ -74,8 +96,82 @@ const reducer = (state, action) => {
      return {...state, [state.currentNode]: {...newState}};
   }
   
+  const removeItem = (state, payload) => {
+    console.log(payload);
+    let newState;
+    let source;
+    let target;
 
-        const [globalState, dispatch] = React.useReducer(reducer, initialState);
+    if(payload.length > 1){
+      source = payload[1].source;
+      target = payload[1].target;
+     }
+    //  else{
+    //   source = payload[1].source;
+    //   target = payload[1].target;
+    //  }
+    
+    if(payload[0].id && (!payload[0].source || !payload[0].target)){
+      newState = Object.keys(state).reduce((obj, key)=>{
+        if(key !== payload[0].id){
+         obj[key] = state[key];
+        }
+      return obj
+     },{});
+     
+     if(payload.length > 1){
+      const newChildren = getNewChildren(source, target, newState);
+     // console.log(test)
+     if(newState[source]){
+      newState[source].children = newChildren;
+     }
+    
+     }
+
+    
+    }
+    //For Deleting edge
+    else if(payload[0].source || payload[0].target){
+      newState = Object.keys(state).reduce((obj, key)=>{
+        if(key !== payload[0].id){
+         obj[key] = state[key];
+        }
+      return obj
+     },{});
+     
+     const newChildren = getNewChildren(payload[0].source, payload[0].target, newState);
+      // console.log(test)
+     
+      newState[payload[0].source].children = newChildren;
+      newState[payload[0].target].parent = null;
+      if(newState[payload[0].target].parentData){
+        
+        newState[payload[0].target].parentData = null;
+      }
+      
+      
+      // newState[payload[0].target].parent = null;
+    }
+
+    return {...newState, currentNode: null}
+  }
+
+  const getNewChildren = (source, target, newState) => {
+    
+    // console.log(delete newState[source].children[target]);
+    if(newState[source]){
+      return Object.keys(newState[source].children).reduce((obj, key) => {
+        if(key !== target){
+          obj[key] = newState[source].children[key];
+        }
+        return obj
+    },{});
+    }
+    return newState;
+    
+  }
+
+  const [globalState, dispatch] = React.useReducer(reducer, initialState);
         
     return(
         <WidgetsContext.Provider value={[globalState, dispatch]}>
